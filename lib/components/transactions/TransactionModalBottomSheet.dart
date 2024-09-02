@@ -1,15 +1,22 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fun_account/model/Transactions/TransactionItem.dart';
+import 'package:provider/provider.dart';
 
-class TransactionInput extends StatefulWidget {
-  const TransactionInput({super.key});
+import '../../model/TransactionListModel.dart';
+import 'TransactionListItem.dart';
+
+class TransactionModalBottomSheet extends StatefulWidget {
+  const TransactionModalBottomSheet({super.key});
 
   @override
-  State<TransactionInput> createState() => _TransactionInputState();
+  State<TransactionModalBottomSheet> createState() =>
+      _TransactionModalBottomSheetState();
 }
 
-class _TransactionInputState extends State<TransactionInput> {
+class _TransactionModalBottomSheetState
+    extends State<TransactionModalBottomSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController descriptionController = TextEditingController();
@@ -73,12 +80,24 @@ class _TransactionInputState extends State<TransactionInput> {
                 onPressed: () => Navigator.pop(context),
               ),
               ElevatedButton(
-                child: const Text('Submit'),
+                  child: const Text('Submit'),
+                  onPressed: () {
 
-                onPressed: () {
-                  Navigator.pop(context);
-            }
-              ),
+                    String description = (descriptionController.text.isEmpty) ? "description_placeholder" :descriptionController.text;
+                    double amount = (amountController.text.isEmpty) ? -1 : double.parse(amountController.text);
+                    double multiplier = (multiplierController.text.isEmpty) ? 0 : double.parse(multiplierController.text);
+
+                    final newTransaction = new TransactionListItem(
+                            description,
+                            amount,
+                            multiplier);
+
+                    setState(() {
+                      Provider.of<TransactionListModel>(context, listen: false)
+                          .addTransaction(newTransaction);
+                    });
+                    Navigator.pop(context);
+                  }),
             ],
           ),
         ),

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TransactionItem extends StatelessWidget {
-  TransactionItem({super.key});
+class TransactionListItem extends StatelessWidget {
+  TransactionListItem(this.description, this.amount, this.multiplier, {super.key});
 
   String description = "description";
-  String amount = "Amount";
-  int multiplier = 1;
+  double amount = 0;
+  double multiplier = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class TransactionItem extends StatelessWidget {
 
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text(description),
-          Text(amount),
+          Text(amount.toString()),
           Text(multiplier.toString())
         ]),
       ),

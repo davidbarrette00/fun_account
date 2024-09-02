@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fun_account/components/transactions/TransactionModalBottomSheet.dart';
+import 'package:provider/provider.dart';
 
-import 'TransactionInput.dart';
-import '../../model/Transactions/TransactionItem.dart';
+import '../../model/TransactionListModel.dart';
+import 'TransactionListItem.dart';
 
 class TransactionsPage extends StatefulWidget {
-  const TransactionsPage({super.key, required this.title});
+  const TransactionsPage(
+      {super.key, required this.title, required this.transactionItems});
 
+  final List<TransactionListItem> transactionItems;
   final String title;
 
   @override
@@ -14,31 +18,10 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-
-  final double TRANSACTION_LIST_HEIGHT = 500; //MediaQuery.sizeOf(context).width * 0.8;
+  final double TRANSACTION_LIST_HEIGHT =
+      500; //MediaQuery.sizeOf(context).width * 0.8;
   final double TRANSACTION_LIST_WIDTH = 400;
 
-  List<TransactionItem> transactionItems = List.empty(growable: true);
-
-
-  void _addListItem() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return TransactionInput();
-      },
-    );
-    setState(() {
-      transactionItems.add(TransactionItem());
-    });
-  }
-
-  void _removeListItem() {
-    if (transactionItems.isEmpty) return;
-    setState(() {
-      transactionItems.removeLast();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,27 +38,29 @@ class _TransactionsPageState extends State<TransactionsPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  height: TRANSACTION_LIST_HEIGHT,
-                  width: TRANSACTION_LIST_WIDTH,
-                  child: ListView(
+                Consumer<TransactionListModel>(
+                    builder: (context, value, child) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    height: TRANSACTION_LIST_HEIGHT,
+                    width: TRANSACTION_LIST_WIDTH,
+                    child: ListView(
                       scrollDirection: Axis.vertical,
-                      children: transactionItems.toList(), //don't remove "toList()"
-                  ),
-                ),
+                      children: value.transactionItems
+                          .toList(), //don't remove "toList()"
+                    ),
+                  );
+                }),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      style: TextStyle(fontSize: 20),
-                        "Number of transactions: ${transactionItems.length}"
-                    ),
+                        style: TextStyle(fontSize: 20),
+                        "Number of transactions: ${widget.transactionItems.length}"),
                   ],
                 )
-
               ],
             ),
           ),
@@ -89,7 +74,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
               child: const Icon(Icons.remove),
             ),
             FloatingActionButton(
-              onPressed: _addListItem,
+              onPressed: () => _addListItem(context),
               tooltip: 'Increment',
               child: const Icon(Icons.add),
             ),
@@ -97,5 +82,21 @@ class _TransactionsPageState extends State<TransactionsPage> {
         )
         // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  void _addListItem(context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return TransactionModalBottomSheet();
+      },
+    );
+  }
+
+  void _removeListItem() {
+    setState(() {
+      Provider.of<TransactionListModel>(context, listen: false)
+          .removeTransaction();
+    });
   }
 }

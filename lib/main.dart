@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fun_account/model/Transactions/TransactionItem.dart';
+import 'package:provider/provider.dart';
 
 import 'components/transactions/TransactionsPage.dart';
+import 'model/TransactionListModel.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,13 +14,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fun Account',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) => TransactionListModel(),
+      child: MaterialApp(
+        title: 'Fun Account',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
+          useMaterial3: true,
+        ),
+        home: TransactionsPage(title: 'Transactions', transactionItems: []),
       ),
-      home: const TransactionsPage(title: 'Transactions'),
     );
   }
 }
