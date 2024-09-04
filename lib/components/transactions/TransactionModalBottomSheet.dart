@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -92,9 +90,10 @@ class _TransactionModalBottomSheetState
                             amount,
                             multiplier);
 
+                    TransactionListModel transactionListModel = Provider.of<TransactionListModel>(context, listen: false);
                     setState(() {
-                      Provider.of<TransactionListModel>(context, listen: false)
-                          .addTransaction(newTransaction);
+                      transactionListModel.addTransaction(newTransaction);
+                      transactionListModel.addToTransactionTotal(amount, multiplier);
                     });
                     Navigator.pop(context);
                   }),

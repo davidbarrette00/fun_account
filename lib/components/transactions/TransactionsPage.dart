@@ -7,7 +7,7 @@ import '../../model/TransactionListModel.dart';
 import 'TransactionListItem.dart';
 
 class TransactionsPage extends StatefulWidget {
-  const TransactionsPage(
+  TransactionsPage(
       {super.key, required this.title, required this.transactionItems});
 
   final List<TransactionListItem> transactionItems;
@@ -22,25 +22,24 @@ class _TransactionsPageState extends State<TransactionsPage> {
       500; //MediaQuery.sizeOf(context).width * 0.8;
   final double TRANSACTION_LIST_WIDTH = 400;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.tertiary,
-          title: Text(widget.title),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        title: Text(widget.title),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary,
         ),
-        body: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Consumer<TransactionListModel>(
-                    builder: (context, value, child) {
-                  return Container(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Consumer<TransactionListModel>(builder: (context, value, child) {
+                return Column(children: [
+                  Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
                     ),
@@ -51,37 +50,38 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       children: value.transactionItems
                           .toList(), //don't remove "toList()"
                     ),
-                  );
-                }),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                        style: TextStyle(fontSize: 20),
-                        "Number of transactions: ${widget.transactionItems.length}"),
-                  ],
-                )
-              ],
-            ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                          style: TextStyle(fontSize: 20),
+                          "Number of transactions: ${value.transactionItems.length}"),
+                    ],
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                            style: TextStyle(fontSize: 20),
+                            "Transaction total: ${value.transactionTotal}"),
+                        Text(
+                            style: TextStyle(fontSize: 20),
+                            "Payment total: ${value.paymentTotal}"),
+                      ]),
+                ]);
+              }),
+            ],
           ),
         ),
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              onPressed: _removeListItem,
-              tooltip: 'Decrement',
-              child: const Icon(Icons.remove),
-            ),
-            FloatingActionButton(
-              onPressed: () => _addListItem(context),
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
-            ),
-          ],
-        )
-        // This trailing comma makes auto-formatting nicer for build methods.
-        );
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addListItem(context),
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
+    );
   }
 
   void _addListItem(context) {
@@ -91,12 +91,5 @@ class _TransactionsPageState extends State<TransactionsPage> {
         return TransactionModalBottomSheet();
       },
     );
-  }
-
-  void _removeListItem() {
-    setState(() {
-      Provider.of<TransactionListModel>(context, listen: false)
-          .removeTransaction();
-    });
   }
 }
