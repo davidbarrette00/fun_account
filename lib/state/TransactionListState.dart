@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import '../components/transactions/TransactionListItem.dart';
 
-class TransactionListModel extends ChangeNotifier {
+class TransactionListState extends ChangeNotifier {
 
   List<TransactionListItem> transactionItems = List.empty(growable: true);
 

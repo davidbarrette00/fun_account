@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fun_account/model/TransactionListModel.dart';
+import 'package:fun_account/state/TransactionListState.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -33,7 +33,7 @@ class TransactionListItem extends StatelessWidget {
           IconButton(
             icon: Icon(CupertinoIcons.trash),
             splashColor: Colors.blue,
-            onPressed: () => Provider.of<TransactionListModel>(context, listen: false).removeTransaction(id),
+            onPressed: () => Provider.of<TransactionListState>(context, listen: false).removeTransaction(id),
           )
         ]),
       ),

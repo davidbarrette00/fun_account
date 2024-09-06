@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fun_account/state/TransactionListState.dart';
 import 'package:provider/provider.dart';
 
 import 'components/transactions/TransactionsPage.dart';
-import 'model/TransactionListModel.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TransactionListModel(),
+      create: (context) => TransactionListState(),
       child: MaterialApp(
         title: 'Fun Account',
         theme: ThemeData(

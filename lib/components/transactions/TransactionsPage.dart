@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fun_account/components/transactions/TransactionModalBottomSheet.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/TransactionListModel.dart';
+import '../../state/TransactionListState.dart';
 import 'TransactionListItem.dart';
 
 class TransactionsPage extends StatefulWidget {
-  TransactionsPage(
+  const TransactionsPage(
       {super.key, required this.title, required this.transactionItems});
 
   final List<TransactionListItem> transactionItems;
@@ -37,7 +37,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Consumer<TransactionListModel>(builder: (context, value, child) {
+              Consumer<TransactionListState>(builder: (context, value, child) {
                 return Column(children: [
                   Container(
                     decoration: BoxDecoration(
@@ -88,7 +88,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return TransactionModalBottomSheet();
+        return const TransactionModalBottomSheet();
       },
     );
   }

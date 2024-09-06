@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/TransactionListModel.dart';
+import '../../state/TransactionListState.dart';
 import 'TransactionListItem.dart';
 
 class TransactionModalBottomSheet extends StatefulWidget {
@@ -90,10 +90,10 @@ class _TransactionModalBottomSheetState
                             amount,
                             multiplier);
 
-                    TransactionListModel transactionListModel = Provider.of<TransactionListModel>(context, listen: false);
+                    TransactionListState transactionListState = Provider.of<TransactionListState>(context, listen: false);
                     setState(() {
-                      transactionListModel.addTransaction(newTransaction);
-                      transactionListModel.addToTransactionTotal(amount, multiplier);
+                      transactionListState.addTransaction(newTransaction);
+                      transactionListState.addToTransactionTotal(amount, multiplier);
                     });
                     Navigator.pop(context);
                   }),
