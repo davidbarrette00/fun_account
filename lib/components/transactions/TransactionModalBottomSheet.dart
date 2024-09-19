@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../state/TransactionListState.dart';
+import '../../state/TransactionPageState.dart';
 import 'TransactionListItem.dart';
 
 class TransactionModalBottomSheet extends StatefulWidget {
@@ -21,12 +21,28 @@ class _TransactionModalBottomSheetState
   TextEditingController amountController = TextEditingController();
   TextEditingController multiplierController = TextEditingController();
 
+  bool isPayment = false;
   String description = "description_placeholder";
   int amount = 0;
   int multiplier = 0;
 
   @override
   Widget build(BuildContext context) {
+    TransactionPageState transactionPageState =
+        Provider.of<TransactionPageState>(context, listen: false);
+
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.red;
+    }
+
     return Form(
       key: _formKey,
       child: Container(
@@ -38,17 +54,40 @@ class _TransactionModalBottomSheetState
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Text('Add Transaction'),
-              TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter description',
-                  labelText: 'Description',
-                ),
-                controller: descriptionController,
-                onChanged: (String value) {
-                  descriptionController.text = value;
-                },
+              Row(
+                children: [
+                  const Text("Is this a payment?"),
+                  Checkbox(
+                    checkColor: Colors.white,
+                    fillColor: MaterialStateProperty.resolveWith(getColor),
+                    value: isPayment,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isPayment = value!;
+                      });
+                    },
+                  ),
+                ],
               ),
+              Autocomplete<String>(onSelected: (String selection) {
+                this.descriptionController.text = selection;
+              }, optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isNotEmpty) {
+                  this.descriptionController.text = textEditingValue.text;
+
+                  List<String> suggestions = <String>[];
+                  for (TransactionListItem item
+                      in transactionPageState.transactionItems) {
+                    if (item.description.startsWith(textEditingValue.text) &&
+                        suggestions.contains(item.description) == false) {
+                      suggestions.add(item.description);
+                    }
+                  }
+
+                  return suggestions;
+                }
+                return [];
+              }),
               TextField(
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -57,9 +96,6 @@ class _TransactionModalBottomSheetState
                   labelText: 'Amount',
                 ),
                 controller: amountController,
-                onChanged: (String value) {
-                  amountController.text = value;
-                },
               ),
               TextField(
                 keyboardType: TextInputType.number,
@@ -69,9 +105,6 @@ class _TransactionModalBottomSheetState
                   labelText: 'Multiplier',
                 ),
                 controller: multiplierController,
-                onChanged: (String value) {
-                  multiplierController.text = value;
-                },
               ),
               ElevatedButton(
                 child: const Text('Cancel'),
@@ -80,20 +113,25 @@ class _TransactionModalBottomSheetState
               ElevatedButton(
                   child: const Text('Submit'),
                   onPressed: () {
-
-                    String description = (descriptionController.text.isEmpty) ? "description_placeholder" :descriptionController.text;
-                    double amount = (amountController.text.isEmpty) ? -1 : double.parse(amountController.text);
-                    double multiplier = (multiplierController.text.isEmpty) ? 0 : double.parse(multiplierController.text);
+                    String description = (descriptionController.text.isEmpty)
+                        ? "description_placeholder"
+                        : descriptionController.text;
+                    double amount = (amountController.text.isEmpty)
+                        ? 1
+                        : double.parse(amountController.text);
+                    double multiplier = (multiplierController.text.isEmpty)
+                        ? 1
+                        : double.parse(multiplierController.text);
 
                     final newTransaction = new TransactionListItem(
-                            description,
-                            amount,
-                            multiplier);
+                      description,
+                      isPayment,
+                      amount,
+                      multiplier,
+                    );
 
-                    TransactionListState transactionListState = Provider.of<TransactionListState>(context, listen: false);
                     setState(() {
-                      transactionListState.addTransaction(newTransaction);
-                      transactionListState.addToTransactionTotal(amount, multiplier);
+                      transactionPageState.addTransaction(newTransaction);
                     });
                     Navigator.pop(context);
                   }),

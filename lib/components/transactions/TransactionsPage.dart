@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fun_account/components/transactions/TransactionModalBottomSheet.dart';
 import 'package:provider/provider.dart';
 
-import '../../state/TransactionListState.dart';
+import '../../state/TransactionPageState.dart';
 import 'TransactionListItem.dart';
 
 class TransactionsPage extends StatefulWidget {
@@ -18,9 +18,15 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-  final double TRANSACTION_LIST_HEIGHT =
-      500; //MediaQuery.sizeOf(context).width * 0.8;
+  final double TRANSACTION_LIST_HEIGHT = 500; //MediaQuery.sizeOf(context).width * 0.8;
   final double TRANSACTION_LIST_WIDTH = 400;
+
+  void initState(){
+    TransactionPageState transactionPageState = Provider.of<TransactionPageState>(context, listen: false);
+    for(double i = 1; i < 5; i++) {
+      transactionPageState.addTransaction(TransactionListItem("Transaction $i",false, i, 1));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +43,12 @@ class _TransactionsPageState extends State<TransactionsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Consumer<TransactionListState>(builder: (context, value, child) {
+              Consumer<TransactionPageState>(builder: (context, value, child) {
                 return Column(children: [
+                  Text(
+                      style: TextStyle(fontSize: 20),
+                      "Fun Account Balance: ${value.balance}"),
+                  SizedBox.fromSize(size: const Size(double.maxFinite, 30),),
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
@@ -47,17 +57,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     width: TRANSACTION_LIST_WIDTH,
                     child: ListView(
                       scrollDirection: Axis.vertical,
-                      children: value.transactionItems
-                          .toList(), //don't remove "toList()"
+                      children: value.transactionItems.toList(),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                          style: TextStyle(fontSize: 20),
-                          "Number of transactions: ${value.transactionItems.length}"),
-                    ],
                   ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -77,7 +78,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addListItem(context),
-        tooltip: 'Increment',
+        tooltip: 'Add Transaction',
         child: const Icon(Icons.add),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
