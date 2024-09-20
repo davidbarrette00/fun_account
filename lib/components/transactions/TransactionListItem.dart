@@ -36,6 +36,11 @@ class _TransactionListItemState extends State<TransactionListItem> {
     return Colors.red;
   }
 
+  String formatDate(){
+    return
+    widget.date.day.toString() + "/" + widget.date.month.toString() + "  " + widget.date.hour.toString() + ":" + widget.date.minute.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     var paymentWithSign = (widget.amount * widget.multiplier).toString();
@@ -55,7 +60,6 @@ class _TransactionListItemState extends State<TransactionListItem> {
       child: ExpansionTile(
         // showTrailingIcon: false,
         trailing: Icon(Icons.edit),
-        children: [getTransactionListItemEdit()],
         title: ListTile(
           title: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Text(widget.description),
@@ -69,26 +73,39 @@ class _TransactionListItemState extends State<TransactionListItem> {
             )
           ]),
         ),
+        subtitle: Text(formatDate()),
+        backgroundColor: Colors.grey[600],
+        collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        children: getTransactionListItemEdit(),
       ),
     );
   }
 
-  Widget getTransactionListItemEdit() {
-    return Column(
-      children: [
-        Divider(),
-        Text(widget.id),
-        Text(widget.date.toString()),
-        Checkbox(
-          checkColor: Colors.white,
-          fillColor: MaterialStateProperty.resolveWith(getColor),
-          value: widget.isPayment,
-          onChanged: (bool? value) {
-            setState(() {
-              widget.isPayment = value!;
-              Provider.of<TransactionPageState>(context, listen: false).handleChangeToPaymentStatus(widget.isPayment, widget.amount * widget.multiplier);
-            });
-          },
+  getTransactionListItemEdit() {
+    return [
+        Divider(color: Colors.grey[900],),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(widget.id.substring(widget.id.length-12, widget.id.length)),
+            Text(widget.date.toString()),
+          ],
+        ),
+        Row(
+          children: [
+            Text("Is Payment?"),
+            Checkbox(
+              checkColor: Colors.white,
+              fillColor: MaterialStateProperty.resolveWith(getColor),
+              value: widget.isPayment,
+              onChanged: (bool? value) {
+                setState(() {
+                  widget.isPayment = value!;
+                  Provider.of<TransactionPageState>(context, listen: false).handleChangeToPaymentStatus(widget.isPayment, widget.amount * widget.multiplier);
+                });
+              },
+            ),
+          ],
         ),
         TextFormField(
           initialValue: widget.description,
@@ -96,6 +113,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
             widget.description = value;
           }),
         ),
+
         TextFormField(
           keyboardType: TextInputType.number,
           initialValue: widget.amount.toString(),
@@ -116,7 +134,6 @@ class _TransactionListItemState extends State<TransactionListItem> {
             Provider.of<TransactionPageState>(context, listen: false).handleChangedTransactionValue(widget.isPayment, widget.amount * widget.multiplier - widget.amount * oldAmount);
           }),
         ),
-      ],
-    );
+      ];
   }
 }

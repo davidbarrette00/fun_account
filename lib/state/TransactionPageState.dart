@@ -24,7 +24,12 @@ class TransactionPageState extends ChangeNotifier {
 
     for(TransactionListItem transaction in transactionItems) {
       if (transaction.id == id) {
-        transactionTotal -= transaction.amount;
+
+        if(transaction.isPayment) {
+          paymentTotal -= transaction.amount * transaction.multiplier;
+        } else {
+          transactionTotal -= transaction.amount * transaction.multiplier;
+        }
         transactionItems.remove(transaction);
         break;
       }
