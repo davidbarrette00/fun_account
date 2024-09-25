@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../state/TransactionPageState.dart';
@@ -31,11 +31,11 @@ class _TransactionModalBottomSheetState
     TransactionPageState transactionPageState =
         Provider.of<TransactionPageState>(context, listen: false);
 
-    Color getColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
+    Color getColor(Set<WidgetState> states) {
+      const Set<WidgetState> interactiveStates = <WidgetState>{
+        WidgetState.pressed,
+        WidgetState.hovered,
+        WidgetState.focused,
       };
       if (states.any(interactiveStates.contains)) {
         return Colors.blue;
@@ -59,7 +59,7 @@ class _TransactionModalBottomSheetState
                   const Text("Is this a payment?"),
                   Checkbox(
                     checkColor: Colors.white,
-                    fillColor: MaterialStateProperty.resolveWith(getColor),
+                    fillColor: WidgetStateProperty.resolveWith(getColor),
                     value: isPayment,
                     onChanged: (bool? value) {
                       setState(() {
@@ -70,10 +70,10 @@ class _TransactionModalBottomSheetState
                 ],
               ),
               Autocomplete<String>(onSelected: (String selection) {
-                this.descriptionController.text = selection;
+                descriptionController.text = selection;
               }, optionsBuilder: (TextEditingValue textEditingValue) {
                 if (textEditingValue.text.isNotEmpty) {
-                  this.descriptionController.text = textEditingValue.text;
+                  descriptionController.text = textEditingValue.text;
 
                   List<String> suggestions = <String>[];
                   for (TransactionListItem item
@@ -95,6 +95,9 @@ class _TransactionModalBottomSheetState
                   hintText: 'Enter amount',
                   labelText: 'Amount',
                 ),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
                 controller: amountController,
               ),
               TextField(
@@ -104,6 +107,9 @@ class _TransactionModalBottomSheetState
                   hintText: 'Enter multiplier',
                   labelText: 'Multiplier',
                 ),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
                 controller: multiplierController,
               ),
               ElevatedButton(
@@ -123,7 +129,7 @@ class _TransactionModalBottomSheetState
                         ? 1
                         : double.parse(multiplierController.text);
 
-                    final newTransaction = new TransactionListItem(
+                    final newTransaction = TransactionListItem(
                       description,
                       isPayment,
                       amount,

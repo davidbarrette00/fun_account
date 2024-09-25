@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fun_account/components/transactions/TransactionModalBottomSheet.dart';
 import 'package:provider/provider.dart';
@@ -18,18 +17,24 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-  final double TRANSACTION_LIST_HEIGHT = 500; //MediaQuery.sizeOf(context).width * 0.8;
-  final double TRANSACTION_LIST_WIDTH = 400;
 
+  double TRANSACTION_LIST_HEIGHT = 0.70;
+  double TRANSACTION_LIST_WIDTH = 0.90;
+
+  @override
   void initState(){
     TransactionPageState transactionPageState = Provider.of<TransactionPageState>(context, listen: false);
-    for(double i = 1; i < 5; i++) {
+    for(double i = 1; i <= 5; i++) {
       transactionPageState.addTransaction(TransactionListItem("Transaction $i",false, i, 1));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    var windowWidth = MediaQuery.of(context).size.width;
+    var windowHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -46,15 +51,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
               Consumer<TransactionPageState>(builder: (context, value, child) {
                 return Column(children: [
                   Text(
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                       "Fun Account Balance: ${value.balance}"),
                   SizedBox.fromSize(size: const Size(double.maxFinite, 30),),
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
                     ),
-                    height: TRANSACTION_LIST_HEIGHT,
-                    width: TRANSACTION_LIST_WIDTH,
+                    height: TRANSACTION_LIST_HEIGHT * windowHeight,
+                    width: TRANSACTION_LIST_WIDTH * windowWidth,
                     child: ListView(
                       scrollDirection: Axis.vertical,
                       children: value.transactionItems.toList(),
@@ -64,10 +69,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                             "Transaction total: ${value.transactionTotal}"),
                         Text(
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                             "Payment total: ${value.paymentTotal}"),
                       ]),
                 ]);

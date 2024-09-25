@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:uuid/uuid.dart';
 
 import '../components/transactions/TransactionListItem.dart';
 

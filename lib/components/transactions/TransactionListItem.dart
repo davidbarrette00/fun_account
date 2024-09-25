@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fun_account/state/TransactionPageState.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -24,11 +25,13 @@ class TransactionListItem extends StatefulWidget {
 class _TransactionListItemState extends State<TransactionListItem> {
   final listItemWidth = 350;
 
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
+  final double DESCRIPTION_WIDTH = 0.60;
+
+  Color getColor(Set<WidgetState> states) {
+    const Set<WidgetState> interactiveStates = <WidgetState>{
+      WidgetState.pressed,
+      WidgetState.hovered,
+      WidgetState.focused,
     };
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
@@ -36,21 +39,23 @@ class _TransactionListItemState extends State<TransactionListItem> {
     return Colors.red;
   }
 
-  String formatDate(){
-    return
-    widget.date.day.toString() + "/" + widget.date.month.toString() + "  " + widget.date.hour.toString() + ":" + widget.date.minute.toString();
+  String formatDate() {
+    return "${widget.date.day}/${widget.date.month}  ${widget.date.hour}:${widget.date.minute}";
   }
 
   @override
   Widget build(BuildContext context) {
+    var windowWidth = MediaQuery.of(context).size.width;
+    var windowHeight = MediaQuery.of(context).size.height;
+
     var paymentWithSign = (widget.amount * widget.multiplier).toString();
     if (widget.isPayment == false) {
       paymentWithSign = "-$paymentWithSign";
     }
 
     return Container(
-      padding: EdgeInsets.all(3),
-      margin: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(3),
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
@@ -59,10 +64,16 @@ class _TransactionListItemState extends State<TransactionListItem> {
       ),
       child: ExpansionTile(
         // showTrailingIcon: false,
-        trailing: Icon(Icons.edit),
+        trailing: const Icon(Icons.edit),
         title: ListTile(
-          title: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            Text(widget.description),
+          title:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+
+                  // double size = constraints.maxHeight * DESCRIPTION_WIDTH;
+              return Text(widget.description);
+            }),
             Text(paymentWithSign.toString()),
             IconButton(
               icon: const Icon(CupertinoIcons.trash),
@@ -73,9 +84,9 @@ class _TransactionListItemState extends State<TransactionListItem> {
             )
           ]),
         ),
-        subtitle: Text(formatDate()),
         backgroundColor: Colors.grey[600],
-        collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        collapsedShape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         children: getTransactionListItemEdit(),
       ),
     );
@@ -83,57 +94,74 @@ class _TransactionListItemState extends State<TransactionListItem> {
 
   getTransactionListItemEdit() {
     return [
-        Divider(color: Colors.grey[900],),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(widget.id.substring(widget.id.length-12, widget.id.length)),
-            Text(widget.date.toString()),
-          ],
-        ),
-        Row(
-          children: [
-            Text("Is Payment?"),
-            Checkbox(
-              checkColor: Colors.white,
-              fillColor: MaterialStateProperty.resolveWith(getColor),
-              value: widget.isPayment,
-              onChanged: (bool? value) {
-                setState(() {
-                  widget.isPayment = value!;
-                  Provider.of<TransactionPageState>(context, listen: false).handleChangeToPaymentStatus(widget.isPayment, widget.amount * widget.multiplier);
-                });
-              },
-            ),
-          ],
-        ),
-        TextFormField(
-          initialValue: widget.description,
-          onChanged: (value) => setState(() {
-            widget.description = value;
-          }),
-        ),
+      Divider(
+        color: Colors.grey[900],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(widget.id.substring(widget.id.length - 12, widget.id.length)),
+          Text(widget.date.toString()),
+        ],
+      ),
+      Row(
+        children: [
+          const Text("Is Payment?"),
+          Checkbox(
+            checkColor: Colors.white,
+            fillColor: WidgetStateProperty.resolveWith(getColor),
+            value: widget.isPayment,
+            onChanged: (bool? value) {
+              setState(() {
+                widget.isPayment = value!;
+                Provider.of<TransactionPageState>(context, listen: false)
+                    .handleChangeToPaymentStatus(
+                        widget.isPayment, widget.amount * widget.multiplier);
+              });
+            },
+          ),
+        ],
+      ),
+      TextFormField(
+        initialValue: widget.description,
+        onChanged: (value) => setState(() {
+          widget.description = value;
+        }),
+      ),
+      TextFormField(
+        keyboardType: TextInputType.number,
+        initialValue: widget.amount.toString(),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
+        ],
+        onChanged: (value) => setState(() {
+          double oldAmount = widget.amount;
+          widget.amount = double.parse(value);
 
-        TextFormField(
-          keyboardType: TextInputType.number,
-          initialValue: widget.amount.toString(),
-          onChanged: (value) => setState(() {
-            double oldAmount = widget.amount;
-            widget.amount = double.parse(value);
+          Provider.of<TransactionPageState>(context, listen: false)
+              .handleChangedTransactionValue(
+                  widget.isPayment,
+                  widget.amount * widget.multiplier -
+                      oldAmount * widget.multiplier);
+        }),
+      ),
+      TextFormField(
+        keyboardType: TextInputType.number,
+        initialValue: widget.multiplier.toString(),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        onChanged: (value) => setState(() {
+          double oldAmount = widget.multiplier;
+          widget.multiplier = double.parse(value);
 
-            Provider.of<TransactionPageState>(context, listen: false).handleChangedTransactionValue(widget.isPayment, widget.amount * widget.multiplier - oldAmount * widget.multiplier);
-          }),
-        ),
-        TextFormField(
-          keyboardType: TextInputType.number,
-          initialValue: widget.multiplier.toString(),
-          onChanged: (value) => setState(() {
-            double oldAmount = widget.multiplier;
-            widget.multiplier = double.parse(value);
-
-            Provider.of<TransactionPageState>(context, listen: false).handleChangedTransactionValue(widget.isPayment, widget.amount * widget.multiplier - widget.amount * oldAmount);
-          }),
-        ),
-      ];
+          Provider.of<TransactionPageState>(context, listen: false)
+              .handleChangedTransactionValue(
+                  widget.isPayment,
+                  widget.amount * widget.multiplier -
+                      widget.amount * oldAmount);
+        }),
+      ),
+    ];
   }
 }
