@@ -25,7 +25,7 @@ class TransactionListItem extends StatefulWidget {
 class _TransactionListItemState extends State<TransactionListItem> {
   final listItemWidth = 350;
 
-  final double DESCRIPTION_WIDTH = 0.60;
+  final double DESCRIPTION_WIDTH = 125;
 
   Color getColor(Set<WidgetState> states) {
     const Set<WidgetState> interactiveStates = <WidgetState>{
@@ -54,8 +54,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(3),
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
@@ -63,17 +62,13 @@ class _TransactionListItemState extends State<TransactionListItem> {
         ),
       ),
       child: ExpansionTile(
-        // showTrailingIcon: false,
+        showTrailingIcon: false,
         trailing: const Icon(Icons.edit),
         title: ListTile(
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-
-                  // double size = constraints.maxHeight * DESCRIPTION_WIDTH;
-              return Text(widget.description);
-            }),
+            Container(
+                width: DESCRIPTION_WIDTH, child: Text(widget.description)),
             Text(paymentWithSign.toString()),
             IconButton(
               icon: const Icon(CupertinoIcons.trash),
@@ -81,7 +76,8 @@ class _TransactionListItemState extends State<TransactionListItem> {
               onPressed: () =>
                   Provider.of<TransactionPageState>(context, listen: false)
                       .removeTransaction(widget.id),
-            )
+            ),
+            const Icon(Icons.edit)
           ]),
         ),
         backgroundColor: Colors.grey[600],

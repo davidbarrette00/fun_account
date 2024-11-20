@@ -69,7 +69,8 @@ class _TransactionModalBottomSheetState
                   ),
                 ],
               ),
-              Autocomplete<String>(onSelected: (String selection) {
+              Autocomplete<String>(
+                  onSelected: (String selection) {
                 descriptionController.text = selection;
               }, optionsBuilder: (TextEditingValue textEditingValue) {
                 if (textEditingValue.text.isNotEmpty) {
@@ -78,7 +79,7 @@ class _TransactionModalBottomSheetState
                   List<String> suggestions = <String>[];
                   for (TransactionListItem item
                       in transactionPageState.transactionItems) {
-                    if (item.description.startsWith(textEditingValue.text) &&
+                    if (item.description.toLowerCase().startsWith(textEditingValue.text.toLowerCase()) &&
                         suggestions.contains(item.description) == false) {
                       suggestions.add(item.description);
                     }
@@ -96,7 +97,7 @@ class _TransactionModalBottomSheetState
                   labelText: 'Amount',
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
                 ],
                 controller: amountController,
               ),
@@ -108,7 +109,7 @@ class _TransactionModalBottomSheetState
                   labelText: 'Multiplier',
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
                 ],
                 controller: multiplierController,
               ),

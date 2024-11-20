@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../components/transactions/TransactionListItem.dart';
+import '../pages/transactions/TransactionListItem.dart';
+
 
 class TransactionPageState extends ChangeNotifier {
 
@@ -9,6 +10,9 @@ class TransactionPageState extends ChangeNotifier {
   double transactionTotal = 0;
   double paymentTotal = 0;
   double balance = 0;
+
+  String transactionFilter = "";
+  int transactionFilterIsPayment = -1;
 
   void addTransaction(TransactionListItem transaction) {
     transactionTotal += transaction.amount * transaction.multiplier;
@@ -61,4 +65,14 @@ class TransactionPageState extends ChangeNotifier {
     balance = paymentTotal - transactionTotal;
     notifyListeners();
   }
+
+  void updateTransactionFilter(String value) {
+    this.transactionFilter = value;
+    notifyListeners();
+  }
+
+  void updateTransactionFilterIsPayment(int value) {
+    this.transactionFilterIsPayment = value;
+    notifyListeners();
+  }  
 }
