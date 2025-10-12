@@ -7,18 +7,20 @@ class TransactionPageState extends ChangeNotifier {
 
   List<TransactionListItem> transactionItems = List.empty(growable: true);
 
-  double transactionTotal = 0;
-  double paymentTotal = 0;
-  double balance = 0;
+  double debitTotal = 0;
+  double creditTotal = 0;
 
   String transactionFilter = "";
   int transactionFilterIsPayment = -1;
 
   void addTransaction(TransactionListItem transaction) {
-    transactionTotal += transaction.amount * transaction.multiplier;
-    transactionItems.add(transaction);
+    if(transaction.isCredit) {
+      creditTotal += transaction.amount * transaction.multiplier;
+    } else {
+      debitTotal += transaction.amount * transaction.multiplier;
+    }
 
-    balance = paymentTotal - transactionTotal;
+    transactionItems.add(transaction);
     notifyListeners();
   }
 
@@ -28,41 +30,36 @@ class TransactionPageState extends ChangeNotifier {
     for(TransactionListItem transaction in transactionItems) {
       if (transaction.id == id) {
 
-        if(transaction.isPayment) {
-          paymentTotal -= transaction.amount * transaction.multiplier;
+        if(transaction.isCredit) {
+          creditTotal -= transaction.amount * transaction.multiplier;
         } else {
-          transactionTotal -= transaction.amount * transaction.multiplier;
+          debitTotal -= transaction.amount * transaction.multiplier;
         }
         transactionItems.remove(transaction);
         break;
       }
     }
-
-    balance = paymentTotal - transactionTotal;
     notifyListeners();
   }
 
-  void handleChangedTransactionValue(bool isPayment, double amount){
-    if(isPayment){
-      paymentTotal += amount;
+  void handleChangedTransactionValue(bool isCredit, double amount){
+    if(isCredit){
+      creditTotal += amount;
     } else {
-      transactionTotal += amount;
+      debitTotal += amount;
     }
-
-    balance = paymentTotal - transactionTotal;
     notifyListeners();
   }
 
   void handleChangeToPaymentStatus(bool newIsPayment, double amount) {
     if(newIsPayment){
-      paymentTotal += amount;
-      transactionTotal -= amount;
+      creditTotal += amount;
+      debitTotal -= amount;
     } else {
-      transactionTotal += amount;
-      paymentTotal -= amount;
+      debitTotal += amount;
+      creditTotal -= amount;
     }
 
-    balance = paymentTotal - transactionTotal;
     notifyListeners();
   }
 
@@ -74,5 +71,14 @@ class TransactionPageState extends ChangeNotifier {
   void updateTransactionFilterIsPayment(int value) {
     this.transactionFilterIsPayment = value;
     notifyListeners();
-  }  
+  }
+
+  void clear(){
+    transactionItems.clear();
+    debitTotal = 0;
+    creditTotal = 0;
+    transactionFilter = "";
+    transactionFilterIsPayment = -1;
+    notifyListeners();
+  }
 }

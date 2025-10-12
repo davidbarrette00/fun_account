@@ -7,14 +7,14 @@ import 'package:uuid/uuid.dart';
 
 class TransactionListItem extends StatefulWidget {
   TransactionListItem(
-      this.description, this.isPayment, this.amount, this.multiplier,
+      this.description, this.isCredit, this.amount, this.multiplier,
       {super.key});
 
   final String id = const Uuid().v4();
   final DateTime date = DateTime.now();
 
   String description;
-  bool isPayment;
+  bool isCredit;
   double amount;
   double multiplier;
 
@@ -49,7 +49,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
     var windowHeight = MediaQuery.of(context).size.height;
 
     var paymentWithSign = (widget.amount * widget.multiplier).toString();
-    if (widget.isPayment == false) {
+    if (!widget.isCredit) {
       paymentWithSign = "-$paymentWithSign";
     }
 
@@ -106,13 +106,13 @@ class _TransactionListItemState extends State<TransactionListItem> {
           Checkbox(
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith(getColor),
-            value: widget.isPayment,
+            value: widget.isCredit,
             onChanged: (bool? value) {
               setState(() {
-                widget.isPayment = value!;
+                widget.isCredit = value!;
                 Provider.of<TransactionPageState>(context, listen: false)
                     .handleChangeToPaymentStatus(
-                        widget.isPayment, widget.amount * widget.multiplier);
+                        widget.isCredit, widget.amount * widget.multiplier);
               });
             },
           ),
@@ -136,7 +136,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
 
           Provider.of<TransactionPageState>(context, listen: false)
               .handleChangedTransactionValue(
-                  widget.isPayment,
+                  widget.isCredit,
                   widget.amount * widget.multiplier -
                       oldAmount * widget.multiplier);
         }),
@@ -153,7 +153,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
 
           Provider.of<TransactionPageState>(context, listen: false)
               .handleChangedTransactionValue(
-                  widget.isPayment,
+                  widget.isCredit,
                   widget.amount * widget.multiplier -
                       widget.amount * oldAmount);
         }),

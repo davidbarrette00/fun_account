@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fun_account/pages/transactions/TransactionsPage.dart';
+import 'package:fun_account/pages/TransactionsPage.dart';
 
 import 'constants/Routes.dart';
 
@@ -15,7 +15,6 @@ class RouteGenerator {
       //home page
         return MaterialPageRoute(builder: ((context) {
           return Scaffold(
-              backgroundColor: Colors.grey[300],
               appBar: getAppBar(context, Titles.transactions),
               body: const TransactionsPage(
                   title: Titles.transactions, transactionItems: []));
@@ -25,7 +24,6 @@ class RouteGenerator {
       //home page
         return MaterialPageRoute(builder: ((context) {
           return Scaffold(
-              backgroundColor: Colors.grey[300],
               appBar: getAppBar(context, Titles.incentives),
               body: const Placeholder());
         }));
@@ -58,7 +56,6 @@ class RouteGenerator {
       // ),
       // ),
       // ),
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
         actions: getAppbarLoggedInActions(context),
         title: Text(title));
   }
@@ -69,10 +66,10 @@ class RouteGenerator {
           onPressed: (() =>
               Navigator.pushReplacementNamed(context, Routes.transactions)),
           child: const Text("Transactions")),
-      ElevatedButton(
-          onPressed: (() =>
-              Navigator.pushReplacementNamed(context, Routes.incentives)),
-          child: const Text("Incentives")),
+      // ElevatedButton(
+      //     onPressed: (() =>
+      //         Navigator.pushReplacementNamed(context, Routes.incentives)),
+      //     child: const Text("Incentives")),
       ElevatedButton(
           onPressed: () {
             // SessionManager.logout(context);

@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../state/TransactionPageState.dart';
-import 'TransactionListItem.dart';
-import 'TransactionModalBottomSheet.dart';
+import '../state/TransactionPageState.dart';
+import 'transactions/TransactionListItem.dart';
+import 'transactions/TransactionModalBottomSheet.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage(
@@ -32,8 +32,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
         Provider.of<TransactionPageState>(context, listen: false);
 
 
+    transactionPageState.clear();
     Set<String> chars = {'a', 's,'};
-    for (int i = 1; i <= 8; i++) {
+    for (int i = 1; i <= 6; i++) {
       var random = Random();
       var randomChar = chars.elementAt(random.nextInt(chars.length));
       if(random.nextInt(2) == 1){
@@ -55,9 +56,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
         child: Builder(builder: (context) {
           return Center(
             child: Column(
@@ -68,26 +66,42 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   return Column(children: [
                     Text(
                         style: const TextStyle(fontSize: 20),
-                        "Fun Account Balance: ${state.balance}"),
-                    TextField(
-                      onChanged: (value) =>
-                          state.updateTransactionFilter(value),
-                      controller: transactionFilterController,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () => {
-                                  transactionFilterController.clear(),
-                                  state.updateTransactionFilter("")
-                                }),
-                        border: const OutlineInputBorder(),
-                        labelText: 'Filter Transactions',
+                        "Total: ${state.creditTotal - state.debitTotal}"),
+                    Container(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                                style: const TextStyle(fontSize: 20),
+                                "Credit(+)Total: ${state.creditTotal}"),
+                            Text(
+                                style: const TextStyle(fontSize: 20),
+                                "Debit(-) Total: ${state.debitTotal}"),
+                          ]),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        onChanged: (value) =>
+                            state.updateTransactionFilter(value),
+                        controller: transactionFilterController,
+                        decoration: InputDecoration(
+
+                          suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () => {
+                                    transactionFilterController.clear(),
+                                    state.updateTransactionFilter("")
+                                  }),
+                          border: const OutlineInputBorder(),
+                          labelText: 'Filter Transactions',
+                        ),
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text("Show only payments"),
+                        Text("Show only credits"),
                         Checkbox(
                           checkColor: Colors.white,
                           value: state.transactionFilterIsPayment == 0,
@@ -100,7 +114,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             }
                           },
                         ),
-                        Text("Show only non-payments"),
+                        Text("Show only debits"),
                         Checkbox(
                           checkColor: Colors.white,
                           value: state.transactionFilterIsPayment == 1,
@@ -119,9 +133,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       size: const Size(double.maxFinite, 30),
                     ),
                     Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
                       height: TRANSACTION_LIST_HEIGHT * windowHeight,
                       width: TRANSACTION_LIST_WIDTH * windowWidth,
                       child: ListView(
@@ -131,23 +142,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                               item.description.toLowerCase().startsWith(state.transactionFilter.toLowerCase())
                               &&
                                   ((state.transactionFilterIsPayment == -1) ||
-                              (state.transactionFilterIsPayment == 0 && item.isPayment) ||
-                              (state.transactionFilterIsPayment == 1 && !item.isPayment)))
+                              (state.transactionFilterIsPayment == 0 && item.isCredit) ||
+                              (state.transactionFilterIsPayment == 1 && !item.isCredit)))
                             .toList(),
                       ),
-                    ),
-                    Container(
-                      height: 100,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                                style: const TextStyle(fontSize: 20),
-                                "Total Spent: ${state.transactionTotal}"),
-                            Text(
-                                style: const TextStyle(fontSize: 20),
-                                "Total Paid: ${state.paymentTotal}"),
-                          ]),
                     ),
                   ]);
                     }

@@ -15,6 +15,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+        brightness: MediaQuery.platformBrightnessOf(context),
+        seedColor: const Color.fromARGB(255, 0, 255, 200)
+    );
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => TransactionPageState(), lazy: false),
@@ -22,8 +26,8 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Fun Account',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-            useMaterial3: true,
+            // colorScheme: colorScheme,
+            // useMaterial3: true,
           ),
           initialRoute: Routes.transactions,
           onGenerateRoute: ((settings) =>
