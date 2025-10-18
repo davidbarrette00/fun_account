@@ -62,28 +62,34 @@ class _TransactionListItemState extends State<TransactionListItem> {
         ),
       ),
       child: ExpansionTile(
-        showTrailingIcon: false,
-        trailing: const Icon(Icons.edit),
         title: ListTile(
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Container(
                 width: DESCRIPTION_WIDTH, child: Text(widget.description)),
             Text(paymentWithSign.toString()),
-            IconButton(
-              icon: const Icon(CupertinoIcons.trash),
-              splashColor: Colors.blue,
-              onPressed: () =>
-                  Provider.of<TransactionPageState>(context, listen: false)
-                      .removeTransaction(widget.id),
-            ),
-            const Icon(Icons.edit)
+              IconButton(
+                icon: const Icon(CupertinoIcons.trash),
+                splashColor: Colors.blue,
+                onPressed: () =>
+                    Provider.of<TransactionPageState>(context, listen: false)
+                        .removeTransaction(widget.id),
+              ),
           ]),
         ),
-        backgroundColor: Colors.grey[600],
+        backgroundColor: Colors.grey[400],
         collapsedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        children: getTransactionListItemEdit(),
+        shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        children: [
+              Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: getTransactionListItemEdit(),
+              ),
+            )
+        ]
       ),
     );
   }
@@ -102,7 +108,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
       ),
       Row(
         children: [
-          const Text("Is Payment?"),
+          const Text("Is Credit?"),
           Checkbox(
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith(getColor),

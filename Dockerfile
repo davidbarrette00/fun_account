@@ -4,7 +4,7 @@ FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
-RUN apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
+RUN apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3 dos2unix lsof psmisc
 RUN apt-get clean
 
 ENV DEBIAN_FRONTEND=dialog
@@ -32,6 +32,8 @@ WORKDIR /app/
 RUN flutter build web
 
 COPY server /app/server
+# Convert Windows line endings to Unix for the startup script
+RUN dos2unix /app/server/server.sh
 
 # Record the exposed port
 EXPOSE 10003
