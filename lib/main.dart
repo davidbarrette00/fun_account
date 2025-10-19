@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fun_account/session_manager.dart';
 import 'package:fun_account/state/TransactionPageState.dart';
 import 'package:provider/provider.dart';
 
-import 'RouteGenerator.dart';
+import 'route_generator.dart';
 import 'constants/Routes.dart';
 
 void main() {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
             // colorScheme: colorScheme,
             // useMaterial3: true,
           ),
-          initialRoute: Routes.landing,
+          initialRoute: Routes.login,//!SessionManager.isLoggedIn ? Routes.transactions : Routes.login,
           onGenerateRoute: ((settings) =>
               RouteGenerator.generateRoutes(settings)),
         ));
