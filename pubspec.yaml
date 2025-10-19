@@ -41,6 +41,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.13.1" # Use the latest version
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -90,3 +91,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+#  image_path: "assets/SantaOnBike.jpg"
+  image_path: "assets/rat.png"
+  # Optional: For adaptive icons on Android
+  # adaptive_icon_foreground: "assets/icon/foreground.png"
+  # adaptive_icon_background: "#FFFFFF" # Or "assets/icon/background.png"
+  # Optional: For themed monochrome icons on Android 13+
+  # adaptive_icon_monochrome: "assets/icon/monochrome.png"

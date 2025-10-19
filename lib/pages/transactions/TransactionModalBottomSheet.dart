@@ -31,7 +31,7 @@ class _TransactionModalBottomSheetState
     TransactionPageState transactionPageState =
         Provider.of<TransactionPageState>(context, listen: false);
 
-    Color getColor(Set<WidgetState> states) {
+    Color   getColor(Set<WidgetState> states) {
       const Set<WidgetState> interactiveStates = <WidgetState>{
         WidgetState.pressed,
         WidgetState.hovered,
@@ -49,100 +49,102 @@ class _TransactionModalBottomSheetState
         height: 500,
         color: Colors.amber,
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text('Add Transaction'),
-              Row(
-                children: [
-                  const Text("Is this a payment?"),
-                  Checkbox(
-                    checkColor: Colors.white,
-                    fillColor: WidgetStateProperty.resolveWith(getColor),
-                    value: isPayment,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isPayment = value!;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Autocomplete<String>(
-                  onSelected: (String selection) {
-                descriptionController.text = selection;
-              }, optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text.isNotEmpty) {
-                  descriptionController.text = textEditingValue.text;
-
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text('Add Transaction'),
+                Row(
+                  children: [
+                    const Text("Is this a credit?"),
+                    Checkbox(
+                      checkColor: Colors.white,
+                      fillColor: WidgetStateProperty.resolveWith(getColor),
+                      value: isPayment,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isPayment = value!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Autocomplete<String>(
+                    onSelected: (String selection) {
+                  descriptionController.text = selection;
+                }, optionsBuilder: (TextEditingValue textEditingValue) {
                   List<String> suggestions = <String>[];
-                  for (TransactionListItem item
-                      in transactionPageState.transactionItems) {
-                    if (item.description.toLowerCase().startsWith(textEditingValue.text.toLowerCase()) &&
-                        suggestions.contains(item.description) == false) {
-                      suggestions.add(item.description);
+                  if (textEditingValue.text.isNotEmpty) {
+                    descriptionController.text = textEditingValue.text;
+
+                    for (TransactionListItem item
+                        in transactionPageState.transactionItems) {
+                      if (item.description.toLowerCase().startsWith(textEditingValue.text.toLowerCase()) &&
+                          suggestions.contains(item.description) == false) {
+                        suggestions.add(item.description);
+                      }
                     }
                   }
-
                   return suggestions;
-                }
-                return [];
-              }),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  hintText: 'Enter amount',
-                  labelText: 'Amount',
+                }),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    hintText: 'Enter amount',
+                    labelText: 'Amount',
+                  ),
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
+                  ],
+                  controller: amountController,
                 ),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
-                ],
-                controller: amountController,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  hintText: 'Enter multiplier',
-                  labelText: 'Multiplier',
+                TextField(
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    hintText: 'Enter multiplier',
+                    labelText: 'Multiplier',
+                  ),
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
+                  ],
+                  controller: multiplierController,
                 ),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
-                ],
-                controller: multiplierController,
-              ),
-              ElevatedButton(
-                child: const Text('Cancel'),
-                onPressed: () => Navigator.pop(context),
-              ),
-              ElevatedButton(
-                  child: const Text('Submit'),
-                  onPressed: () {
-                    String description = (descriptionController.text.isEmpty)
-                        ? "description_placeholder"
-                        : descriptionController.text;
-                    double amount = (amountController.text.isEmpty)
-                        ? 1
-                        : double.parse(amountController.text);
-                    double multiplier = (multiplierController.text.isEmpty)
-                        ? 1
-                        : double.parse(multiplierController.text);
+                ElevatedButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                ElevatedButton(
+                    child: const Text('Submit'),
+                    onPressed: () {
+                      String description = (descriptionController.text.isEmpty)
+                          ? "description_placeholder"
+                          : descriptionController.text;
+                      double amount = (amountController.text.isEmpty)
+                          ? 1
+                          : double.parse(amountController.text);
+                      double multiplier = (multiplierController.text.isEmpty)
+                          ? 1
+                          : double.parse(multiplierController.text);
 
-                    final newTransaction = TransactionListItem(
-                      description,
-                      isPayment,
-                      amount,
-                      multiplier,
-                    );
+                      final newTransaction = TransactionListItem(
+                        description,
+                        isPayment,
+                        amount,
+                        multiplier,
+                      );
 
-                    setState(() {
-                      transactionPageState.addTransaction(newTransaction);
-                    });
-                    Navigator.pop(context);
-                  }),
-            ],
+                      setState(() {
+                        transactionPageState.addTransaction(newTransaction);
+                      });
+                      Navigator.pop(context);
+                    }),
+              ],
+            ),
           ),
         ),
       ),

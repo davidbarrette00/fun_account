@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fun_account/pages/TransactionsPage.dart';
+import 'package:fun_account/pages/LandingPage.dart';
 
 import 'constants/Routes.dart';
 
@@ -11,6 +12,18 @@ class RouteGenerator {
     switch (settings.name) {
     //
     //
+
+      case Routes.landing:
+        return MaterialPageRoute(builder: ((context) {
+          return Scaffold(
+            backgroundColor: Colors.grey[300],
+            appBar: getAppBar(context, Titles.landing),
+            body: const LandingPage(
+              title: Titles.landing,
+            ),
+          );
+        }));
+
       case Routes.transactions:
       //home page
         return MaterialPageRoute(builder: ((context) {
@@ -27,21 +40,6 @@ class RouteGenerator {
               appBar: getAppBar(context, Titles.incentives),
               body: const Placeholder());
         }));
-    //
-    //
-    //   case Routes.address:
-    //     return MaterialPageRoute(builder: ((context) {
-    //       return Scaffold(
-    //         backgroundColor: Colors.grey[300],
-    //         appBar: getAppBar(context, "Addresses"),
-    //         body: ChangeNotifierProvider(
-    //           create: (context) => AddressChangeNotifier(),
-    //           child: AddressPage(),
-    //         ),
-    //       );
-    //     }));
-    //
-    //
       default:
         return _errorRoute();
     }
@@ -64,7 +62,7 @@ class RouteGenerator {
     return [
       ElevatedButton(
           onPressed: (() =>
-              Navigator.pushReplacementNamed(context, Routes.transactions)),
+              Navigator.pushNamed(context, Routes.transactions)),
           child: const Text("Transactions")),
       // ElevatedButton(
       //     onPressed: (() =>

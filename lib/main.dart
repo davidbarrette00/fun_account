@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
             // colorScheme: colorScheme,
             // useMaterial3: true,
           ),
-          initialRoute: Routes.transactions,
+          initialRoute: Routes.landing,
           onGenerateRoute: ((settings) =>
               RouteGenerator.generateRoutes(settings)),
         ));

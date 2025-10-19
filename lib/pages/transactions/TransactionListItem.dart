@@ -48,7 +48,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
     var windowWidth = MediaQuery.of(context).size.width;
     var windowHeight = MediaQuery.of(context).size.height;
 
-    var paymentWithSign = (widget.amount * widget.multiplier).toString();
+    String paymentWithSign = (widget.amount * widget.multiplier).toString();
     if (!widget.isCredit) {
       paymentWithSign = "-$paymentWithSign";
     }
@@ -62,26 +62,19 @@ class _TransactionListItemState extends State<TransactionListItem> {
         ),
       ),
       child: ExpansionTile(
-        title: ListTile(
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            Container(
-                width: DESCRIPTION_WIDTH, child: Text(widget.description)),
-            Text(paymentWithSign.toString()),
-              IconButton(
-                icon: const Icon(CupertinoIcons.trash),
-                splashColor: Colors.blue,
-                onPressed: () =>
-                    Provider.of<TransactionPageState>(context, listen: false)
-                        .removeTransaction(widget.id),
-              ),
-          ]),
-        ),
+        controlAffinity: ListTileControlAffinity.leading,
         backgroundColor: Colors.grey[400],
-        collapsedShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text(widget.description),
+        subtitle: Text(paymentWithSign),
+        trailing: IconButton(
+          icon: const Icon(CupertinoIcons.trash),
+          splashColor: Colors.blue,
+          onPressed: () =>
+              Provider.of<TransactionPageState>(context, listen: false)
+                  .removeTransaction(widget.id),
+        ),
         children: [
               Container(
               padding: const EdgeInsets.all(10),
@@ -98,13 +91,6 @@ class _TransactionListItemState extends State<TransactionListItem> {
     return [
       Divider(
         color: Colors.grey[900],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(widget.id.substring(widget.id.length - 12, widget.id.length)),
-          Text(widget.date.toString()),
-        ],
       ),
       Row(
         children: [
@@ -163,6 +149,13 @@ class _TransactionListItemState extends State<TransactionListItem> {
                   widget.amount * widget.multiplier -
                       widget.amount * oldAmount);
         }),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(widget.id.substring(widget.id.length -8, widget.id.length)),
+          Text(widget.date.toString  ()),
+        ],
       ),
     ];
   }
