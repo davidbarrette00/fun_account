@@ -49,4 +49,8 @@ class LoginAuthService {
     SessionManager.login(context, _auth, password);
     Navigator.pushNamed(context, Routes.home);
   }
+
+  // static Future<UserCredential?>  signInWithGoogle(){
+  //   return _auth.;
+  // }
 }

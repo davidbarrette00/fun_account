@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fun_account/pages/login_page.dart';
 import 'package:fun_account/pages/transactions_page.dart';
 import 'package:fun_account/pages/landing_page.dart';
 import 'package:fun_account/session_manager.dart';
@@ -8,6 +11,8 @@ import 'constants/Routes.dart';
 
 class RouteGenerator {
   static Route<MaterialPageRoute> generateRoutes(RouteSettings settings) {
+    log('is Logged in: ${SessionManager.isLoggedIn}');
+
     if (SessionManager.isLoggedIn) {
       return handleLoggedIn(settings);
     } else {
@@ -51,9 +56,8 @@ class RouteGenerator {
       //home page
         return MaterialPageRoute(builder: ((context) {
           return Scaffold(
-              appBar: getAppBar(context, Titles.transactions),
-              body: const TransactionsPage(
-                  title: Titles.transactions, transactionItems: []));
+              appBar: getAppBar(context, Titles.login),
+              body: const LoginPage());
         }));
 
       default:

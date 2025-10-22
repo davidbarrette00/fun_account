@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fun_account/session_manager.dart';
 import 'package:fun_account/state/TransactionPageState.dart';
@@ -6,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'route_generator.dart';
 import 'constants/Routes.dart';
 
-void main() {
+void main() async {
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

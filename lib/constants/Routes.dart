@@ -8,7 +8,8 @@ class Routes {
 }
 
 class Titles {
-  static const String landing = 'Landing';
+  static const String loading = 'Loading...';
+  static const String login = 'Login';
   static const String transactions = 'Transactions';
   static const String incentives = 'Incentives';
 }

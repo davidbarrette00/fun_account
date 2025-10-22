@@ -27,7 +27,7 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    // return Placeholder();
 
     return SafeArea(
       child: Center(
@@ -44,20 +44,18 @@ class _LoginPage extends State<LoginPage> {
     return [
       //-------------------------------Welcome------------------------------
       Image.asset(
-        'images/logo.png',
+        'assets/rat.png',
         width: 200,
         height: 200,
       ),
 
       const Text(
-        "Welcome To Lockify",
+        "Welcome To -_-",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
       ),
       const SizedBox(
         height: 10,
       ),
-      const Text("Login to start securely saving your data",
-          style: TextStyle(fontSize: 18)),
 
       const SizedBox(
         height: 50,
@@ -165,7 +163,7 @@ class _LoginPage extends State<LoginPage> {
                     builder: ((context) =>
                         AlertDialog(content: LoginPageRegistration())))
               }, //LoginAuthService.registerNewUser(context)},
-          child: const Text("New? No worries, click here to register!"))
+          child: const Text("Click here to register!"))
     ];
   }
 
@@ -263,6 +261,10 @@ class _LoginPageRegistrationState extends State<LoginPageRegistration> {
               print("Bad form");
             }
           })),
+      Text("or continue with google"),
+      ElevatedButton(onPressed: () {return;}/*LoginAuthService
+      .signInWithGoogle()*/,
+          child: Text("Google"))
     ];
   }
 
