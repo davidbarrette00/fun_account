@@ -8,14 +8,36 @@ import 'route_generator.dart';
 import 'constants/Routes.dart';
 
 void main() async {
-  // await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(RestartWidget(
+      child: MaterialApp()
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RestartWidget extends StatefulWidget {
+  RestartWidget({required this.child});
 
-  // This widget is the root of your application.
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = ColorScheme.fromSeed(
@@ -27,12 +49,12 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => TransactionPageState(), lazy: false),
         ],
         child: MaterialApp(
-          title: 'Fun Account',
+          title: 'In The Moment',
           theme: ThemeData(
             // colorScheme: colorScheme,
             // useMaterial3: true,
           ),
-          initialRoute: Routes.login,//!SessionManager.isLoggedIn ? Routes.transactions : Routes.login,
+          initialRoute: SessionManager.isLoggedIn ? Routes.transactions : Routes.login,
           onGenerateRoute: ((settings) =>
               RouteGenerator.generateRoutes(settings)),
         ));

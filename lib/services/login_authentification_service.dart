@@ -24,7 +24,7 @@ class LoginAuthService {
 
     _auth.currentUser?.updateDisplayName(registeringUser.firstName + registeringUser.lastName);
     SessionManager.login(context, _auth, registeringUser.password);
-    Navigator.pushNamed(context, Routes.home);
+    Navigator.pushNamed(context, Routes.transactions);
   }
 
   static Future<String?> deleteUser(BuildContext context, RegisteringUser registeringUser) async {
@@ -47,7 +47,7 @@ class LoginAuthService {
         email: email, password: password);
 
     SessionManager.login(context, _auth, password);
-    Navigator.pushNamed(context, Routes.home);
+    Navigator.pushNamed(context, Routes.transactions);
   }
 
   // static Future<UserCredential?>  signInWithGoogle(){

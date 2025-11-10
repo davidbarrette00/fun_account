@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'constants/Routes.dart';
+import 'main.dart';
 import 'model/exceptions/KnownErrors.dart';
 
 
@@ -29,6 +30,7 @@ class SessionManager {
     } on Exception catch (e) {
       log("Exception Logging in: $e");
     }
+    RestartWidget.restartApp(context);
   }
 
   static logout(BuildContext context) {
@@ -38,7 +40,9 @@ class SessionManager {
     SessionManager.userId = null;
     SessionManager.isLoggedIn = false;
     SessionManager.auth = null;
-    Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (r) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (r) =>
+    false);
+    RestartWidget.restartApp(context);
   }
 
 

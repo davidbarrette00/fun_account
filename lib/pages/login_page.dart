@@ -50,16 +50,54 @@ class _LoginPage extends State<LoginPage> {
       ),
 
       const Text(
-        "Welcome To -_-",
+        "In The Moment",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
-      ),
-      const SizedBox(
-        height: 10,
       ),
 
       const SizedBox(
         height: 50,
       ),
+
+
+      //TODO Remove
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            minimumSize: Size(100, 40),
+          ),
+          child: isLoading
+              ? CircularProgressIndicator(color: Colors.white)
+              : const Text("Bypass Login"),
+          onPressed: () async {
+            if (!isLoading) {
+              setState(() {
+                isLoading = true; // Set loading to true
+              });
+
+              try {
+                await LoginAuthService.signInWithEmailAndPassword(
+                  context,
+                  "admin@gmail.com",
+                  "admin123",
+                );
+              } catch (e) {
+                log("Login failed: $e");
+              } finally {
+                setState(() {
+                  isLoading = false; // Reset loading to false
+                });
+              }
+            }
+          }),
+
+
+
+
+
+
+
+
+
 
       //---------------------------Username Field------------------------
       FractionallySizedBox(

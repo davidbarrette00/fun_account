@@ -7,11 +7,29 @@ import 'package:uuid/uuid.dart';
 
 class TransactionListItem extends StatefulWidget {
   TransactionListItem(
-      this.description, this.isCredit, this.amount, this.multiplier,
-      {super.key});
+      this.description,
+      this.isCredit,
+      this.amount,
+      this.multiplier, {
+        String? id,
+        DateTime? date,
+        super.key,
+      })  : id = id ?? const Uuid().v4(),
+        date = date ?? DateTime.now();
 
-  final String id = const Uuid().v4();
-  final DateTime date = DateTime.now();
+
+  TransactionListItem.fromData(
+      this.description,
+      this.isCredit,
+      this.amount,
+      this.multiplier,
+      this.id,
+      this.date, {
+        super.key,
+      });
+
+  final String id;
+  final DateTime date;
 
   String description;
   bool isCredit;
