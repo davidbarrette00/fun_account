@@ -54,6 +54,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
     var windowWidth = MediaQuery.of(context).size.width;
     var windowHeight = MediaQuery.of(context).size.height;
 
+    String date = getDate();
+
     return Scaffold(
       body: Container(
         child: Builder(builder: (context) {
@@ -64,6 +66,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 Consumer<TransactionPageState>(
                     builder: (context, state, child) {
                   return Column(children: [
+                    Text(
+                      style: const TextStyle(fontSize: 20),
+                      date,
+                    ),
                     Text(
                         style: const TextStyle(fontSize: 20),
                         "Total: ${state.creditTotal - state.debitTotal}"),
@@ -171,5 +177,37 @@ class _TransactionsPageState extends State<TransactionsPage> {
         return const TransactionModalBottomSheet();
       },
     );
+  }
+
+  String getDate() {
+    DateTime now = DateTime.now();
+    switch (DateTime.now().month) {
+      case 1:
+        return "Jan, ${now.year}";
+      case 2:
+        return "Feb, ${now.year}";
+      case 3:
+        return "March, ${now.year}";
+      case 4:
+        return "April, ${now.year}";
+      case 5:
+        return "May, ${now.year}";
+      case 6:
+        return "June, ${now.year}";
+      case 7:
+        return "July, ${now.year}";
+      case 8:
+        return "Aug, ${now.year}";
+      case 9:
+        return "Sept, ${now.year}";
+      case 10:
+        return "Oct, ${now.year}";
+      case 11:
+        return "Nov, ${now.year}";
+      case 12:
+        return "Dec, ${now.year}";
+      default:
+        return "Error";
+    }
   }
 }

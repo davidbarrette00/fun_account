@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "871392480899",
+    "project_id": "fun-account-6cdd4",
+    "storage_bucket": "fun-account-6cdd4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871392480899:android:32c2aed4c81590573e55b6",
+        "android_client_info": {
+          "package_name": "barcoprojects.fun_account"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871392480899-qe6s3cpmsdnt61vkcqdibda866188pop.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA68CZZTMMlqexLmrKV2pVgpxK8Dag0AGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871392480899-qe6s3cpmsdnt61vkcqdibda866188pop.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
